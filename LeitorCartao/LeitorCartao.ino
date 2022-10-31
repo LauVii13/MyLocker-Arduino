@@ -24,7 +24,12 @@ void setup() {
   }
 }
 
+String cartao = "65 117 26 38";
+String leitor = "";
+
 void loop() {
+
+  
 
   if ( ! rfid.PICC_IsNewCardPresent())
     return;
@@ -34,34 +39,66 @@ void loop() {
 
   MFRC522::PICC_Type piccType = rfid.PICC_GetType(rfid.uid.sak);
 
+              
               for (byte i = 0; i < 4; i++) {
                 nuidPICC[i] = rfid.uid.uidByte[i];
               }
+
+              leitor = "";
+              
               Serial.println();
-              Serial.print(F("In hex: "));
-              printHex(rfid.uid.uidByte, rfid.uid.size);
-              Serial.println();
+             
               Serial.print(F("In dec: "));
+
+              
+              
               printDec(rfid.uid.uidByte, rfid.uid.size);
               Serial.println();
+
+
+
+              Serial.println("Cartao: " + cartao);
+
+              Serial.println("Leitor: " + leitor);
+
+
+
+          //verificacao se é dono ou n
+              if(cartao == leitor){
+                Serial.println("Armario aberto");
+              }
+              else{
+                Serial.println("Armario nao liberado");
+              }
     
             rfid.PICC_HaltA();
           
             rfid.PCD_StopCrypto1();
 }
 
-
-void printHex(byte *buffer, byte bufferSize) {
-  for (byte i = 0; i < bufferSize; i++) {
-    Serial.print(buffer[i] < 0x10 ? " 0" : " ");
-    Serial.print(buffer[i], HEX);
-  }
-}
-
-
 void printDec(byte *buffer, byte bufferSize) {
   for (byte i = 0; i < bufferSize; i++) {
     Serial.print(buffer[i] < 0x10 ? " 0" : " ");
     Serial.print(buffer[i], DEC);
+
+      
+     if(i == 0){
+      if(buffer[i] < 10){
+          leitor = "0" + String(buffer[i], DEC);
+        }
+        else{
+          leitor =String(buffer[i], DEC);
+        }
+     }
+     else{
+      if(buffer[i] < 10){
+          leitor = leitor + " 0" + buffer[i];
+        }
+        else{
+          leitor = leitor + " " + buffer[i];
+        }
+     }
+        
+      
   }
 }
