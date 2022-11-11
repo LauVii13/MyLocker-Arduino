@@ -1,4 +1,4 @@
-
+//https://stackoverflow.com/questions/67828007/how-can-i-send-get-or-post-request-to-heroku-api-using-esp8266
 
 #include <ESP8266WiFi.h>
 #include <WiFiClientSecure.h>
@@ -13,61 +13,38 @@ const int httpsPort = 3333; // HTTPS PORT (default: 443)
 int refreshtime = 15; // Make new HTTPS request after x seconds
 
 
-String datarx; // Received data as string
-long crontimer;
+HTTPClient https;    //Declare object of class HTTPClient
+WiFiClient client;   // Declare out of loop like a global variable
 
-void setup () {
-  delay (1000);
-  Serial.begin (115200);
-  WiFi.mode (WIFI_OFF);
-  delay (1000);
-  WiFi.mode (WIFI_STA);
-  WiFi.begin (ssid, password);
-  Serial.print ("Connecting");
-  while (WiFi.status()!= WL_CONNECTED) {
-    delay (500);
-    Serial.print (".");
-  }
-  Serial.print ("Connected:");
-  Serial.println (ssid);
-}
 
-void loop () {
-  if (crontimer <millis() / 1000) {
-    crontimer = (millis() / 1000) + refreshtime;
-    callhttps (); //
-  }
-}
+https.begin(client, "https://mylocker-api.herokuapp.com/");      
+//Specify request destination
+    
+    https.addHeader("Content-Type", "application/x-www-form-urlencoded"); //Specify content-type header
+      
+    int httpCode = https.POST(""); //Send the request    
+    
+    String payload = https.getString(); //Get the response payload
 
-void callhttps () {
-  WiFiClientSecure httpsClient;
-  httpsClient.setTimeout(15000);
-  delay (1000);
-  int retry = 0;
-  while ((!httpsClient.connect(host, httpsPort)) && (retry <15)) {
-    delay (100);
-    Serial.print(".");
-    retry ++;
-  }
-  if (retry == 15) {
-    Serial.println("Connection failed");
-  }
-  else {
-    Serial.println("Connected to Server");
-  }
-  httpsClient.print (String ("GET") + path + 
-                    "HTTP / 1.1 \ r \ n" +
-                    "Host:" + host +
-                    "\ r \ n" + "Connection: close \ r \ n \ r \ n");
-  while (httpsClient.connected ()) {
-    String line = httpsClient.readStringUntil ('\ n');
-    if (line == "\ r") {
-      break;
+    Serial.print("[HTTP] POST...\n");
+    // httpCode will be negative on error
+    if (httpCode > 0) {
+      // HTTP header has been send and Server response header has been handled
+      Serial.printf("[HTTP] POST... code: %d\n", httpCode);
+      
+      // file found at server
+      if (httpCode == HTTP_CODE_OK) {
+        const String& payload = https.getString();
+        Serial.println("received payload:\n<<");
+        Serial.println(payload);
+        Serial.println(">>");
+        https.end();  //Close connection
+      }
+    } else {
+      Serial.print (payload);
+      Serial.print (httpCode);
+      Serial.println(WiFi.localIP());
+      
+      Serial.printf("[HTTP] POST... failed, error: %s\n", https.errorToString(httpCode).c_str());
+      https.end();  //Close connection
     }
-  }
-  while (httpsClient.available ()) {
-    datarx += httpsClient.readStringUntil ('\ n');
-  }
-  Serial.println (datarx);
-  datarx = "";
-}
