@@ -4,7 +4,6 @@
 #include <WiFiClientSecure.h>
 #include <ESP8266WebServer.h>
 #include <ESP8266HTTPClient.h>
-#include <Servo.h>
 
 #define SS_PIN D8
 #define RST_PIN D0
@@ -28,11 +27,7 @@ WiFiClient client;   // Declare out of loop like a global variable
 // Init array that will store new NUID
 byte nuidPICC[4];
 
-Servo mm;
-
 void setup() {
-  mm.attach(0);
-  mm.write(0);
   Serial.begin(115200);
   SPI.begin(); // Init SPI bus
   rfid.PCD_Init(); // Init MFRC522
@@ -70,7 +65,6 @@ void setup() {
   }
 }
 
-int teste = 0;
 String ra = "";
 String cartao = "65 117 26 38";
 String leitor = "";
@@ -119,21 +113,6 @@ void loop() {
       GetRequest("http://mylocker-api.herokuapp.com/students/" + ra + "/lockers/" + armario);
 
   delay(500);
-
-  
-  if(dono == true){
-    if(teste == 0){
-      teste = 1;
-      mm.write(110);
-    }
-    else{
-      teste = 0;
-      mm.write(0);
-    }
-  }
-  else{
-    mm.write(0);
-  }
     
     rfid.PICC_HaltA();
           
