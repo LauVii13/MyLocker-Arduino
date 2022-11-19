@@ -28,15 +28,7 @@ void setup() {
   //Serial.print(F("Reader :"));
   rfid.PCD_DumpVersionToSerial();
 
-<<<<<<< HEAD
-        
-        
-=======
 
-
-
-
->>>>>>> bdb6314f3b6aa475a20879f3919b2add8304372e
         Serial.println(""); //PULA UMA LINHA NA JANELA SERIAL
         Serial.println(""); //PULA UMA LINHA NA JANELA SERIAL
         Serial.print("Conectando a "); //ESCREVE O TEXTO NA SERIAL
@@ -53,15 +45,11 @@ void setup() {
         Serial.println(ssid); //ESCREVE O NOME DA REDE NA SERIAL
         server.begin(); //INICIA O SERVIDOR PARA RECEBER DADOS NA PORTA DEFINIDA EM "WiFiServer server(porta);"
         Serial.println("Servidor iniciado"); //ESCREVE O TEXTO NA SERIAL
-<<<<<<< HEAD
+
 
         Serial.print("IP para se conectar ao NodeMCU: "); //ESCREVE O TEXTO NA SERIAL
         Serial.print("http://"); //ESCREVE O TEXTO NA SERIAL
         Serial.println(WiFi.localIP()); //ESCREVE NA SERIAL O IP RECEBIDO DENTRO DA REDE SEM FIO (O IP NESSA PRÁTICA É RECEBIDO DE FORMA AUTOMÁTICA)
-
-=======
->>>>>>> bdb6314f3b6aa475a20879f3919b2add8304372e
-         
 
 
 
@@ -83,11 +71,6 @@ void setup() {
 String cartao = "65 117 26 38";
 String leitor = "";
 
-<<<<<<< HEAD
-
-
-=======
->>>>>>> bdb6314f3b6aa475a20879f3919b2add8304372e
 void loop() {
 
   
